@@ -14,9 +14,13 @@ export const RegisterForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            register(username, email, password).then(() => {
+            const registredUser = await register(username, email, password);
+            console.log("registredUser: ", registredUser);
+            if (registredUser) {
                 navigate("/dashboard");
-            });
+            } else {
+                setError("Chyba při registraci");
+            }
         } catch (err) {
             setError("Chyba při registraci");
         }

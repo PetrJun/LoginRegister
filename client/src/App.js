@@ -5,6 +5,7 @@ import { RegisterForm } from "./components/RegisterForm";
 import { Dashboard } from "./pages/Dashboard";
 import { UserProvider } from "./providers/UserProvider";
 import { Header } from "./components/Header";
+import { AdminDashboard } from "./pages/AdminDashboard";
 
 function App() {
     return (
@@ -29,8 +30,8 @@ function App() {
                                     element={<Dashboard />}
                                 />
                                 <Route
-                                    path="/dashboardadmin"
-                                    element={<p>Tady asi byt nemas :C</p>}
+                                    path="/admin-dashboard"
+                                    element={<AdminDashboard />}
                                 />
                             </Routes>
                         </Col>

@@ -46,10 +46,10 @@ export const Header = () => {
                     <Nav.Item>
                         <Nav.Link
                             as={Link}
-                            to="/dashboardadmin"
+                            to="/admin-dashboard"
                             className="text-danger"
                         >
-                            Dashboard Admin
+                            Admin Dashboard
                         </Nav.Link>
                     </Nav.Item>
                     <Button

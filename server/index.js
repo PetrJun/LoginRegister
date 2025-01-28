@@ -31,9 +31,10 @@ async function initializeDb() {
         await db.exec(`
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE,
-                email TEXT UNIQUE,
-                password TEXT
+                username TEXT UNIQUE NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                isAdmin BOOLEAN DEFAULT FALSE
             )
         `);
         console.log("Users table created or already exists.");
@@ -58,12 +59,18 @@ async function initializeDb() {
                     email: "bob@example.com",
                     password: "dev",
                 },
+                {
+                    username: "admin",
+                    email: "admin@admin.com",
+                    password: "dev",
+                    isAdmin: true,
+                }
             ];
 
             for (const user of mockUsers) {
                 await db.run(
-                    "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-                    [user.username, user.email, user.password]
+                    "INSERT INTO users (username, email, password, isAdmin) VALUES (?, ?, ?, ?)",
+                    [user.username, user.email, user.password, user.isAdmin || false]
                 );
             }
 
@@ -95,7 +102,7 @@ app.post("/register", async (req, res) => {
         const user = await db.get("SELECT * FROM users WHERE id = ?", result.lastID);
 
         //Create and send token
-        const token = jwt.sign({ id: user.id, email: user.email, username: user.username }, "jwt_secret", {
+        const token = jwt.sign({ id: user.id, email: user.email, username: user.username, isAdmin: !!user.isAdmin }, "jwt_secret", {
             expiresIn: "1h",
         });
         res.json(token);
@@ -110,12 +117,8 @@ app.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        console.log("login");
-
         // Find user in database
         const user = await db.get("SELECT * FROM users WHERE email = ?", email);
-
-        console.log("user: ", user);
 
         if (!user) {
             return res.status(401).json({ error: "Invalid email or password" });
@@ -124,14 +127,12 @@ app.post("/login", async (req, res) => {
         // Check password
         const validPassword = password === user.password;
 
-        console.log("validPassword: ", validPassword);
-
         if (!validPassword) {
             return res.status(401).json({ error: "Invalid email or password" });
         }
 
         // Create and send token
-        const token = jwt.sign({ id: user.id, email: user.email, username: user.username }, "jwt_secret", {
+        const token = jwt.sign({ id: user.id, email: user.email, username: user.username, isAdmin: !!user.isAdmin }, "jwt_secret", {
             expiresIn: "1h",
         });
         res.json(token);

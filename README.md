@@ -29,7 +29,7 @@ To start the backend server, follow these steps:
 
 To start the frontend part of the application, follow these steps:
 
-1. Navigate to the client directory:
+1. Navigate to the `client` directory:
     ```bash
     cd client
     ```

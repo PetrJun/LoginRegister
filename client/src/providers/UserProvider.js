@@ -35,9 +35,12 @@ export const UserProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const token = await AuthService.login(email, password);
+            console.log("token: " + token);
             sessionStorage.setItem('user', token);
             const decodedUser = jwtDecode(token);
+            console.log("decodedUser: ", decodedUser);
             setUser({ ...decodedUser, token });
+            return { ...decodedUser, token };
         } catch (error) {
             console.error('Invalid email or password:', error);
         }
@@ -49,6 +52,7 @@ export const UserProvider = ({ children }) => {
             sessionStorage.setItem('user', token);
             const decodedUser = jwtDecode(token);
             setUser({ ...decodedUser, token });
+            return {...decodedUser, token };
         } catch (error) {
             console.error('Invalid username or email or password: ', error);
         }

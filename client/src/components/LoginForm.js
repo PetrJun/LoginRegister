@@ -13,10 +13,16 @@ export function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            login(email, password).then(() => {
+            const loggedinUser = await login(email, password);
+            console.log("loggedinUser: ", loggedinUser);
+            if (loggedinUser) {
                 navigate("/dashboard");
-            });
+            } else {
+                // If login result doesn't contain a valid token
+                setError("Nesprávné přihlašovací údaje");
+            }
         } catch (err) {
+            // If login fails, display error message
             setError("Nesprávné přihlašovací údaje");
         }
     };
